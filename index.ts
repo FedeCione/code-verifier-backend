@@ -14,10 +14,14 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Welcome to my API Restful: Express + TS + Nodemon + Jest + Swagger + Mongoose');
 });
 
-// Define first route of app
-app.get('/hello', (req: Request, res: Response) => {
-    // Send Hello World
-    res.send('Welcome to GET Route: Hello!');
+app.get('/hello/:name', (req: Request, res: Response) => {
+    const message = `Hola, ${req.params.name}`;
+    res.status(200).send(message);
+});
+
+app.get('/data', (req: Request, res: Response) => {
+    const message = "Goodbye, world";
+    res.status(200).send(message);
 });
 
 // Execute APP and Listen Requests to PORT
