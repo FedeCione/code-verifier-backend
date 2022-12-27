@@ -8,12 +8,6 @@ dotenv.config();
 const app: Express = express();
 const port: string | number = process.env.PORT || 8000;
 
-// Define first route of app
-app.get('/', (req: Request, res: Response) => {
-    // Send Hello World
-    res.send('Welcome to my API Restful: Express + TS + Nodemon + Jest + Swagger + Mongoose');
-});
-
 app.get('/hello/:name', (req: Request, res: Response) => {
     const message = `Hola, ${req.params.name}`;
     res.status(200).send(message);
