@@ -70,6 +70,10 @@ When you're ready to make this README your own, just edit this file and use the 
 
 - __Webpack__: Webpack is a static module bundler for JavaScript applications — it takes all the code from your application and makes it usable in a web browser. Modules are reusable chunks of code built from your app's JavaScript, node_modules, images, and the CSS styles which are packaged to be easily used in your website.
 
+- __Cors__: Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain outside the domain from which the first resource was served.
+
+- __Helmet__: Helmet is a useful Node.js module that helps you secure HTTP headers returned by your Express apps.
+
 ## NPM Scripts
 
 - __"build": "npx tsc"__ - Transpile the code using tsconfig.json
