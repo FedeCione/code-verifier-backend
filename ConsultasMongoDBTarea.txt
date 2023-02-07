@@ -1,0 +1,76 @@
+PARTE 1:
+Hacer peticiones al servidor de Mongo desde Mongo Compass & Mongo Shell para hacer los siguientes ejercicios:
+
+1: Listar todos los contactos.
+    Solution Mongo Compass: {}
+    Solution Mongo Shell: db.Contacs.find()
+
+2: Busca el primer contacto que sea de Alemania (Germany).
+    Solution Mongo Compass: {"location.country": "Germany"}
+                            Limit: 1
+    Solution Mongo Shell: db.Contacts.findOne({"location.country": "Germany"})
+
+3: Busca todos los contactos que tengan Blake como nombre (first).
+    Solution Mongo Compass: {"name.first": "Blake"}
+    Solution Mongo Shell: db.Contacts.find({"name.first": "Blake"})
+
+4: Busca los primeros 5 contactos que tengan como género (gender) hombre (male)
+    Solution Mongo Compass: {"gender": "male"}
+                            Limit: 5
+    Solution Mongo Shell: db.Contacts.find({"gender": "male"}).limit(5)
+
+5: Devuelve los 4 primeros contactos ordenados por nombre (name) de manera descendente.
+    Solution Mongo Compass: db.Contacts.find().sort({"name": -1}).limit(4)
+    Solution Mongo Shell: {}
+                          Sort: {"name": -1}
+                          Limit: 4
+
+6: Clona la colección de Contacts a CopiaContacts y luego bórrala.
+    Solution Mongo Shell: db.Contacts.aggregate([{$out: "CopiaContacts"}])
+                          db.CopiaContacts.drop()
+
+7: Renombra el campo de name por nombre.
+    Solution Mongo Shell: db.Contacts.updateMany({}, {$rename: {"name": "nombre"}})
+
+8: Borra todos los contactos que tengan como estado (state) Florida.
+    Solution Mongo Shell: db.myCollection.remove({age: 25})
+
+PARTE 2:
+
+1: Muestra las primeras 5 ciudades que empiecen por A ordenadas de manera ascendente, las soluciones deben ser únicas.
+    Solution: db.Contacts.find({"location.city": /^A/}).sort({"location.city":1}).limit(5)
+
+2: Crea una colección a parte, que solo contenga a los contactos de Francia (France) y que tengan entre 18 y 50 años. Usa una agregación para ello.
+    Solution: db.Contacts.aggregate([
+                { $match: { location.country: "France", registered.age: { $gte: 18, $lte: 50 } } },
+                { $out: "frenchContacts" }
+              ])
+
+3: Añade un número favorito a cada contacto, luego crea un bucket agrupando por número favorito que separe en 5 segmentos.
+    Solution: db.Contacts.updateMany({}, { $set: { favoritenum: "555-555-5555" } })
+                db.contacts.aggregate([
+                    { $bucketAuto: { 
+                        groupBy: "$favoritenum", 
+                        buckets: 5 
+                    } }
+                ])
+
+
+4: En la colección de Contacts, haz una proyección la cual tiene que devolver solo el name y username del contacto.
+    Solution: db.Contacts.find({}, {_id: false, "nombre.first": 1, "nombre.title": 1});
+
+5: Haz una consulta en la colección de Contacts la cual devuelva un documento por cada nombre (name) y que sea único, ordenado por apellido (last), tienes que usar el operador $unwind.
+    Solution: db.contacts.aggregate([
+                    { $unwind: "$name" },
+                    { $sort: { last: 1 } },
+                    { $group: { _id: "$name", contact: { $first: "$$ROOT" } } }
+                ])
+
+6: Haz una proyección convirtiendo la fecha (date) a un formato DD-MM-AAAA, la nueva variable será fechaNacimiento
+    Solution: db.contacts.aggregate([
+                { $project: {
+                    fechaNacimiento: { $dateToString: { format: "%d-%m-%Y", date: "$date" } },
+                    name: 1,
+                    last: 1
+                } }
+            ])
