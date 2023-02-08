@@ -56,7 +56,7 @@ export const createUser = async (user: any): Promise<any | undefined> => {
     }
 }
 
-// - Get User by Email
+// - Update User by ID
 export const updateUserById = async (id: any, user: any): Promise<any | undefined> => {
     try {
         let userModel = userEntity();
@@ -71,4 +71,4 @@ export const updateUserById = async (id: any, user: any): Promise<any | undefine
 
 
 // TODO:
-// - Update User by ID
+// - Get User by Email

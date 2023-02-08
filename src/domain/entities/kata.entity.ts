@@ -3,14 +3,14 @@ import mongoose from "mongoose";
 export const kataEntity = () => {
     let kataSchema = new mongoose.Schema(
         {
-            Name: String,
-            Description: String,
-            Level: Number,
-            User: Number,
-            Chances: Number,
-            Date: Date,
-            Valoration: Number
+            name: String,
+            description: String,
+            level: Number,
+            users: Number,
+            attemps: Number,
+            date: Date,
+            valoration: Number
         }
     )
-    return mongoose.model('Katas', kataSchema);
+    return mongoose.models.Katas || mongoose.model('Katas', kataSchema);
 }
