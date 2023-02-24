@@ -81,10 +81,10 @@ export const registerUser = async (user: IUser): Promise<any | undefined> => {
     try {
         let userModel = userEntity();
 
-        // Search all users
-        return await userModel.find({isDelete: false})
+        // Create / Insert new user
+        return await userModel.create(user);
     } catch (error) {
-        LogError(`[ORM ERROR]: Getting all Users: ${error}`);
+        LogError(`[ORM ERROR]: Creating user: ${error}`);
     }
 }
 

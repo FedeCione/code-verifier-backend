@@ -17,9 +17,9 @@ export class AuthController implements IAuthController {
         let response: any = '';
 
         if(user) {
-            LogSuccess(`[api/auth/register] Register new user: ${user}`);
-            response = await registerUser(user).then((r) => {
-                LogSuccess(`[api/auth/register] Created user: ${user}`);
+            LogSuccess(`[api/auth/register] Register new user: ${user.name}`);
+            await registerUser(user).then((r) => {
+                LogSuccess(`[api/auth/register] Created user: ${user.email}`);
                 response = {
                     message: `User created successfully: ${user.name}`
                 }
@@ -41,13 +41,16 @@ export class AuthController implements IAuthController {
 
         if(auth) {
             LogSuccess(`[api/auth/login] Logged in user: ${auth.email}`);
-            response = await loginUser(auth).then((r) => {
+            await loginUser(auth).then((r) => {
                 LogSuccess(`[api/auth/login] Logged in user: ${auth.email}`);
                 response = {
                     message: `User logged in successfully: ${auth.email}`,
                     token: r.token // JWT Generated for logged in user
                 }
-            });
+            })
+            .catch((err) => {
+                return err;
+            })
         } else {
             LogWarning('[api/auth/login] Login needs auth entity(email && password)');
             response = {

@@ -10,11 +10,10 @@ import bcrypt from 'bcrypt';
 // Router from Express
 let authRouter = express.Router();
 
-authRouter.route('/auth/register')
+authRouter.route('/register')
     .post (async ( req:Request, res:Response) => {
 
         let { name, email, password, age} = req.body;
-        let hashPassword = '';
 
         if(name && email && password && age) {
 
@@ -39,7 +38,7 @@ authRouter.route('/auth/register')
         }
     })
 
-authRouter.route('/auth/login')
+authRouter.route('/login')
     .post (async (req:Request, res:Response) => {
 
         let { email, password } = req.body;
@@ -49,7 +48,6 @@ authRouter.route('/auth/login')
             // Controller Instance to Execute Method
             const controller: AuthController = new AuthController();
 
-            // TODO: use IAuth
             let auth: IAuth = {
                 email: email,
                 password: password

@@ -29,10 +29,6 @@ server.use(
     })
 );
 
-// Define SERVER to use "/api" and use rootRouter from 'index.ts' in routes
-// From this point onover: http://localhost:8000/api/...
-server.use('/api', rootRouter);
-
 // Static server
 server.use(express.static('public'));
 
@@ -52,5 +48,9 @@ server.use(express.json({ limit: '50mb' }));
 server.get('/', (req: Request, res: Response) => {
     res.redirect('/api');
 });
+
+// Define SERVER to use "/api" and use rootRouter from 'index.ts' in routes
+// From this point onover: http://localhost:8000/api/...
+server.use('/api', rootRouter);
 
 export default server;
