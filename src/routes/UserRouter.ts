@@ -1,6 +1,10 @@
 import express, { Request, Response } from "express";
 import { UserController } from "../controller/usersController";
 import { LogInfo } from "../utils/logger";
+import { IUser } from "../domain/interfaces/IUser.interface";
+
+// BCRYPT for passwords
+import bcrypt from 'bcrypt';
 
 // Router from Express
 let usersRouter = express.Router();
@@ -17,7 +21,7 @@ usersRouter.route('/')
         // Obtain Response
         const response: any = await controller.getUsers(id);
         // Send Response to the Client
-        return res.send(response);
+        return res.status(200).send(response);
     })
 
     // DELETE:
@@ -30,7 +34,7 @@ usersRouter.route('/')
        // Obtain Response
        const response: any = await controller.deleteUser(id);
        // Send Response to the Client
-       return res.send(response);
+       return res.status(200).send(response);
     })
 
     // POST:
@@ -39,6 +43,8 @@ usersRouter.route('/')
         let name: any = req?.query?.name;
         let age: any = req?.query?.age;
         let email: any = req?.query?.email;
+
+        let name2: any = req?.body?.name;
 
         // Controller Instance to Execute Method
         const controller: UserController = new UserController();
@@ -52,7 +58,7 @@ usersRouter.route('/')
         // Obtain Response
         const response: any = await controller.createUser(user);
         // Send Response to the Client
-        return res.send(response);
+        return res.status(201).send(response);
     })
 
     // PUT:
@@ -76,8 +82,17 @@ usersRouter.route('/')
         // Obtain Response
         const response: any = await controller.updateUser(id, user);
         // Send Response to the Client
-        return res.send(response);
+        return res.status(200).send(response);
     })
 
 // Export Hello Router
 export default usersRouter;
+
+/**
+ * 
+ * Get Documents => 200 OK
+ * Creation Documents => 200 OK
+ * Deletion of Documents => 200 (Entity) / 204 (No return)
+ * Update of Documents => 200 Entity / 204 (No return)
+ * 
+ */
