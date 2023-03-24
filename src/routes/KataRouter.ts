@@ -2,13 +2,16 @@ import express, { Request, Response } from "express";
 import { KataController } from "../controller/katasController";
 import { LogInfo } from "../utils/logger";
 
+// JWT verifier middleware
+import { verifyToken } from "../middlewares/verifyToken.middleware";
+
 // Router from Express
 let katasRouter = express.Router();
 
 // http://localhost:8000/api/katas?id=<kata id>
 katasRouter.route('/')
     // GET:
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken, async (req: Request, res: Response) => {
         // Obtain a Query Param (ID)
         let id: any = req?.query?.id;
         let level: any = req?.query?.level;
@@ -22,7 +25,7 @@ katasRouter.route('/')
     })
     
     // DELETE:
-    .delete(async (req:Request, res:Response) => {
+    .delete(verifyToken, async (req:Request, res:Response) => {
         // Obtain a Query Param (ID)
         let id: any = req?.query?.id;
         LogInfo(`Query Param: ${id}`);
@@ -35,7 +38,7 @@ katasRouter.route('/')
     })
 
     // POST:
-    .post(async (req:Request, res:Response) => {
+    .post(verifyToken, async (req:Request, res:Response) => {
         // Obtain a Query Params (name, description, attemps, date, level, users, valoration)
         let name: any = req?.query?.name;
         let description: any = req?.query?.description;
@@ -66,7 +69,7 @@ katasRouter.route('/')
     })
 
     // PUT:
-    .put(async (req:Request, res:Response) => {
+    .put(verifyToken, async (req:Request, res:Response) => {
         // Obtain a Query Params (id, name, description, attemps, date, level, users, valoration)
         let id: any = req?.query?.id;
         let name: any = req?.query?.name;
@@ -99,7 +102,7 @@ katasRouter.route('/')
 
 katasRouter.route('/recent')
     // GET:
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken, async (req: Request, res: Response) => {
         // Controller Instance to Execute Method
         const controller: KataController = new KataController();
         // Obtain Response
@@ -110,7 +113,7 @@ katasRouter.route('/recent')
 
 katasRouter.route('/valoration')
     // GET:
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken, async (req: Request, res: Response) => {
         // Controller Instance to Execute Method
         const controller: KataController = new KataController();
         // Obtain Response
@@ -120,7 +123,7 @@ katasRouter.route('/valoration')
     })
 
     // PUT:
-    .put(async (req:Request, res:Response) => {
+    .put(verifyToken, async (req:Request, res:Response) => {
         // Obtain a Query Params (id, valoration)
         let id: any = req?.query?.id;
         let valoration: any = req?.query?.valoration;
@@ -141,7 +144,7 @@ katasRouter.route('/valoration')
 
 katasRouter.route('/attemps')
     // GET:
-    .get(async (req: Request, res: Response) => {
+    .get(verifyToken, async (req: Request, res: Response) => {
         // Controller Instance to Execute Method
         const controller: KataController = new KataController();
         // Obtain Response
