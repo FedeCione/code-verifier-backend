@@ -6,6 +6,11 @@ import { IUser } from "../domain/interfaces/IUser.interface";
 // BCRYPT for passwords
 import bcrypt from 'bcrypt';
 
+//  Body parser to read Body from the requests
+import bodyParser from 'body-parser';
+
+let jsonParser = bodyParser.json();
+
 // Router from Express
 let usersRouter = express.Router();
 
@@ -37,32 +42,8 @@ usersRouter.route('/')
        return res.status(200).send(response);
     })
 
-    // POST:
-    .post(async (req:Request, res:Response) => {
-        // Obtain a Query Params (name, age, email)
-        let name: any = req?.query?.name;
-        let age: any = req?.query?.age;
-        let email: any = req?.query?.email;
-
-        let name2: any = req?.body?.name;
-
-        // Controller Instance to Execute Method
-        const controller: UserController = new UserController();
-
-        const user = {
-            name: name || "default",
-            age: age || 69,
-            email: email || "default email"
-        }
-
-        // Obtain Response
-        const response: any = await controller.createUser(user);
-        // Send Response to the Client
-        return res.status(201).send(response);
-    })
-
     // PUT:
-    .put(async (req:Request, res:Response) => {
+    .put(jsonParser, async (req:Request, res:Response) => {
         // Obtain a Query Params (id, name, age, email)
         let id: any = req?.query?.id;
         let name: any = req?.query?.name;
