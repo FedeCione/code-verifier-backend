@@ -1,18 +1,37 @@
 import { kataEntity } from "../entities/kata.entity";
 
 import { LogSuccess, LogError } from "../../utils/logger";
+import { IKata } from "../interfaces/IKata.interface";
 
 // CRUD
 
 /**
  * Method to obtain all katas from collection "katas" in Mongo Server
  */
-export const getAllKatas = async (): Promise<any[] | undefined> => {
+export const getAllKatas = async (page:number, limit: number): Promise<any[] | undefined> => {
     try {
         let kataModel = kataEntity();
 
-        // Search all katas
-        return await kataModel.find({isDelete: false})
+        let response: any = {};
+
+        // Search all katas (using pagination)
+        await kataModel.find({isDelete: false})
+            .select('name description level users attemps date valoration')
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec().then((users: IKata[]) => {
+                response.users = users;
+            });
+
+        // Count total documents in collection "Katas"
+        await kataModel.countDocuments().then((total: number) => {
+            response.totalPages = Math.ceil(total / limit);
+            response.currentPage = page;
+        });
+
+        return response;
+
+
     } catch (error) {
         LogError(`[ORM ERROR]: Getting all katas: ${error}`);
     }
@@ -24,7 +43,7 @@ export const getKataById = async (id: string): Promise<any | undefined> => {
         let kataModel = kataEntity();
 
         // Search kata by ID
-        return await kataModel.findById(id);
+        return await kataModel.findById(id).select('name description level users attemps date valoration');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting kata by ID: ${error}`);
     }
@@ -36,7 +55,7 @@ export const getKataByLevel = async (level: number): Promise<any | undefined> =>
         let kataModel = kataEntity();
 
         // Search kata by level
-        return await kataModel.findOne({level: level});
+        return await kataModel.findOne({level: level}).select('name description level users attemps date valoration');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting kata by Level: ${error}`);
     }
@@ -48,7 +67,7 @@ export const getRecentKatas = async (): Promise<any | undefined> => {
         let kataModel = kataEntity();
 
         // Search recent katas
-        return await kataModel.find().sort({date: -1}).limit(5);
+        return await kataModel.find().sort({date: -1}).limit(5).select('name description level users attemps date valoration');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting 5 recent katas: ${error}`);
     }
@@ -60,7 +79,7 @@ export const getKatasByValoration = async (): Promise<any | undefined> => {
         let kataModel = kataEntity();
 
         // Search katas sorted
-        return await kataModel.find().sort({valoration: -1});
+        return await kataModel.find().sort({valoration: -1}).select('name description level users attemps date valoration');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting sorted katas by valoration: ${error}`);
     }
@@ -72,7 +91,7 @@ export const getKatasByAttemps = async (): Promise<any | undefined> => {
         let kataModel = kataEntity();
 
         // Search katas sorted
-        return await kataModel.find().sort({attemps: -1});
+        return await kataModel.find().sort({attemps: -1}).select('name description level users attemps date valoration');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting sorted katas by attemps: ${error}`);
     }

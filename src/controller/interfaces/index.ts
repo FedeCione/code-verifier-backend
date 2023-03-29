@@ -11,7 +11,7 @@ export interface IGoodbyeController {
 
 export interface IUserController {
     // Read all user from database || Get user by ID
-    getUsers(id?: string): Promise<any>
+    getUsers(page:number, limit: number, id?: string): Promise<any>
     // Delete User by ID
     deleteUser(id?: string): Promise<any>
     // Update User
@@ -20,7 +20,7 @@ export interface IUserController {
 
 export interface IKataController {
     // Read all katas from database || Get kata by ID
-    getKatas(id?: string): Promise<any>
+    getKatas(page:number, limit: number, id?: string): Promise<any>
     // Delete kata by ID
     deleteKata(id?: string): Promise<any>
     // Create new kata

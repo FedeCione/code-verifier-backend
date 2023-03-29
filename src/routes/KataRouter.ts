@@ -15,13 +15,18 @@ katasRouter.route('/')
         // Obtain a Query Param (ID)
         let id: any = req?.query?.id;
         let level: any = req?.query?.level;
-        LogInfo(`Query Params: ${id}, ${level}`);
+
+        // Pagination
+        let page: any = req?.query?.page || 1;
+        let limit: any = req?.query?.limit || 10;
+
+        LogInfo(`Query Params: ${id}, ${level}, ${page}, ${limit}`);
         // Controller Instance to Execute Method
         const controller: KataController = new KataController();
         // Obtain Response
-        const response: any = await controller.getKatas(id, level);
+        const response: any = await controller.getKatas(page, limit, id, level);
         // Send Response to the Client
-        return res.send(response);
+        return res.status(200).send(response);
     })
     
     // DELETE:

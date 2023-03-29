@@ -2,6 +2,7 @@ import { userEntity } from "../entities/user.entity";
 import { LogSuccess, LogError } from "../../utils/logger";
 import { IUser } from "../interfaces/IUser.interface";
 import { IAuth } from "../interfaces/IAuth.interface";
+import { UserResponse } from "../types/UsersResponse.type";
 
 // Environment Variables
 import dotenv from 'dotenv';
@@ -11,6 +12,7 @@ import bcrypt from 'bcrypt';
 
 // JWT
 import jwt from 'jsonwebtoken';
+
 
 // Configuration of environment variables
 dotenv.config();
@@ -23,12 +25,29 @@ const secret = process.env.SECRETKEY || 'MYSECRETKEY';
 /**
  * Method to obtain all users from collection "Users" in Mongo Server
  */
-export const getAllUsers = async (): Promise<any[] | undefined> => {
+export const getAllUsers = async (page:number, limit: number): Promise<any[] | undefined> => {
     try {
         let userModel = userEntity();
 
-        // Search all users
-        return await userModel.find({isDelete: false})
+        let response: any = {};
+
+        // Search all users (using pagination)
+        await userModel.find({isDelete: false})
+            .select('name email age')
+            .limit(limit)
+            .skip((page - 1) * limit)
+            .exec().then((users: IUser[]) => {
+                response.users = users;
+            });
+
+            // Count total documents in collection "Users"
+            await userModel.countDocuments().then((total: number) => {
+                response.totalPages = Math.ceil(total / limit);
+                response.currentPage = page;
+            });
+
+            return response;
+
     } catch (error) {
         LogError(`[ORM ERROR]: Getting all Users: ${error}`);
     }
@@ -40,7 +59,7 @@ export const getUserById = async (id: string): Promise<any | undefined> => {
         let userModel = userEntity();
 
         // Search User by ID
-        return await userModel.findById(id);
+        return await userModel.findById(id).select('name email age');
     } catch (error) {
         LogError(`[ORM ERROR]: Getting user by ID: ${error}`);
     }
